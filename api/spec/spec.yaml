@@ -1,0 +1,333 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Disruptive Delivery
+  description: An API for communicating and handling back-end implementations of the disruptive delivery system.
+
+servers:
+  - url: http://localhost:8080
+    description: Disruptive Delivery back-end
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - "id"
+        - "type"
+      properties:
+        id:
+          type: string
+          readOnly: true
+        type:
+          type: integer
+          readOnly: true
+    Order:
+      type: object
+      required:
+        - "id"
+        - "status"
+        - "delivery_time"
+        - "delivery_address"
+        - "packages"
+      properties:
+        id:
+          type: string
+          readOnly: true
+        status:
+          type: string
+          enum: [at_retailer,warehouse,on_route,delivered]
+        delivery_time:
+          type: string
+          format: date-time
+        delivery_address:
+          type: string
+        packages:
+          type: array
+          items:
+            $ref: "#/components/schemas/Package"
+    Package:
+      type: object
+      required:
+        - "id"
+        - "weight"
+        - "size"
+      properties:
+        id:
+          type: string
+          readOnly: true
+        weight:
+          type: number
+        x_in_mm:
+          type: integer
+        y_in_mm:
+          type: integer
+        z_in_mm:
+          type: integer
+
+  responses:
+    BadRequest:
+      description: Request was not well-formed, see error details
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error-message:
+                type: string
+                description: Error message detailing the problem with the request
+
+    NotFound:
+      description: Resource not found
+
+    NoResults:
+      description: List empty; no results
+
+    ServerError:
+      description: Server error; no results, try again later 
+  parameters:
+    user-selector-id:
+      name: userId
+      in: path
+      required: true
+      description: The id of the user
+      schema:
+        type: string
+    order-selector-id:
+      name: orderId
+      in: path
+      required: true
+      description: The id of the order
+      schema:
+        type: string
+
+paths:
+  /user/{userId}:
+    get: #Retrieve all information for a specific user
+      tags:
+        - Users
+      summary: Retrieve user information
+      description: Retrieve all information for a specific user by their unique ID
+      parameters:
+        - $ref: '#/components/parameters/user-selector-id'
+      responses:
+        '200':
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        '204':
+          $ref: "#/components/responses/NoResults"
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+    put: #Update user information
+      tags:
+        - Users
+      summary: Update user information
+      description: Updates the user with the given id
+      parameters:
+        - $ref: '#/components/parameters/user-selector-id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: "User updated, returns the new state"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+    delete: #Delete a user
+      tags:
+        - Users
+      summary: Delete a user
+      description: Deletes the user with the given id
+      parameters:
+        - $ref: '#/components/parameters/user-selector-id'
+      responses:
+        '204':
+          description: User deleted successfully
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+  /user/{userId}/orders:
+    get: #Retrieve all order from a specific user
+      tags:
+        - Users
+      summary: Retrieve all orders from a user
+      description: Retrieve all orders for a specific user by their unique ID
+      parameters:
+        - $ref: '#/components/parameters/user-selector-id'
+      responses:
+        '200':
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+        '204':
+          $ref: "#/components/responses/NoResults"
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+  /user:
+    post: #Create a user
+      tags:
+        - Users
+      summary: Create a new user
+      description: Creates a new user with the given information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '201':
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                type: string
+                description: ID of newly created user
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The URL of the newly-created user
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+  /order/{orderId}:
+    get: #Retrieve all information for a specific order
+      tags:
+        - Orders
+      summary: Retrieve order information
+      description: Retrieve all information for a specific order by its unique ID
+      parameters:
+        - $ref: '#/components/parameters/order-selector-id'
+      responses:
+        '200':
+          description: "Success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        '204':
+          $ref: "#/components/responses/NoResults"
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+    put: #Update order information
+      tags:
+        - Orders
+      summary: Update order information
+      description: Updates the order with the given id
+      parameters:
+        - $ref: '#/components/parameters/order-selector-id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        '200':
+          description: "Order updated, returns the new state"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+    delete: #Delete an order
+      tags:
+        - Orders
+      summary: Delete an order
+      description: Deletes the order with the given id
+      parameters:
+        - $ref: '#/components/parameters/order-selector-id'
+      responses:
+        '204':
+          description: Order deleted successfully
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '404':
+          $ref: "#/components/responses/NotFound"
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+  /order:
+    post: #Create an order
+      tags:
+        - Orders
+      summary: Create a new order
+      description: Creates a new order with the given information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        '201':
+          description: Order successfully created
+          content:
+            application/json:
+              schema:
+                type: string
+                description: ID of newly created order
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The URL of the newly-created order
+
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+        '5XX':
+          $ref: '#/components/responses/ServerError'
