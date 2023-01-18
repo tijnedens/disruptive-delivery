@@ -61,7 +61,28 @@ public class DatabaseConnection {
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
 
-            result = resultSetToJson(rs);
+            if (rs.next()) {
+                result = resultSetToJson(rs);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return result;
+    }
+
+    public Map getUser(String name) {
+        String sql = "SELECT * FROM users WHERE username = ?";
+        Map<String, String> result = new HashMap<>();
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                result = resultSetToJson(rs);
+            }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -111,6 +132,22 @@ public class DatabaseConnection {
             System.out.println(e.getMessage());
         }
     }
+
+//    public void insertDeliveries() {
+//
+//
+//        System.out.println("in insertDeliveries("+ordNum+")");
+//        String insertSql = "INSERT INTO deliveries(ord_num, status, retailer_name, content, " +
+//                "pickup_loc, dropoff_loc, email) values(?,?,?,?,?,?,?)";
+//
+//        try {
+//            PreparedStatement pstmt = this.conn.prepareStatement(insertSql);
+//            pstmt.setString(1, ordNum);
+//            pstmt.executeUpdate();
+//        } catch (SQLException e) {
+//            System.out.println(e.getMessage());
+//        }
+//    }
 
     public void deleteDeliveries(String ordNum) {
         System.out.println("in deleteDeliveries("+ordNum+")");

@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 import StartMenu from './routes/StartMenu';
 import Tracking from './routes/Tracking';
 import Login from './routes/Login';
+import UserPortal from './routes/UserPortal';
 import { createBrowserRouter, RouterProvider, useLocation, useOutlet} from 'react-router-dom';
 import {
   CSSTransition,
@@ -15,7 +16,8 @@ const routes = [
   { path: '/', name: 'Home', element: <StartMenu />, nodeRef: createRef() },
   { path: '/tracking/', name: 'Tracking', element: <Tracking />, nodeRef: createRef() },
   { path: '/tracking/:trackingId', name: 'Tracking Order', element: <Tracking />, nodeRef: createRef() },
-  { path: '/login/', name: 'Log-in', element: <Login />, nodeRef: createRef() }
+  { path: '/login/', name: 'Log-in', element: <Login />, nodeRef: createRef() },
+  { path: '/portal/employee/:username', name: 'User UI', element: <UserPortal />, nodeRef: createRef() }
 ]
 
 const router = createBrowserRouter([

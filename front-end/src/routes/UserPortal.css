@@ -1,4 +1,4 @@
-#login-menu {
+#user-portal {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -12,18 +12,6 @@
   font-weight: bold;
 }
 
-#login-menu > span {
+#user-portal > span {
   font-size: 1.5em;
-}
-
-#numberInput {
-  display: flex;
-}
-
-#numberInput input {
-  width: 100px;
-}
-
-#numberInput button {
-  cursor: pointer;
 }

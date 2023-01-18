@@ -1,6 +1,41 @@
 package com.api;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Orders {
+
+    public Object getSender_info() {
+        return sender_info;
+    }
+
+    public void setSender_info(Object sender_info) {
+        this.sender_info = sender_info;
+    }
+
+    private Object sender_info;
+
+    public Object getReceiver_info() {
+        return receiver_info;
+    }
+
+    public void setReceiver_info(Object receiver_info) {
+        this.receiver_info = receiver_info;
+    }
+
+    private Object receiver_info;
+
+    public String getSend_date() {
+        return send_date;
+    }
+
+    public void setSend_date(String send_date) {
+        this.send_date = send_date;
+    }
+
+
+    private String send_date;
+
     private int id;
 
     public int getOrder_id() {
