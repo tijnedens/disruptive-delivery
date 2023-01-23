@@ -133,22 +133,6 @@ public class DatabaseConnection {
         }
     }
 
-//    public void insertDeliveries() {
-//
-//
-//        System.out.println("in insertDeliveries("+ordNum+")");
-//        String insertSql = "INSERT INTO deliveries(ord_num, status, retailer_name, content, " +
-//                "pickup_loc, dropoff_loc, email) values(?,?,?,?,?,?,?)";
-//
-//        try {
-//            PreparedStatement pstmt = this.conn.prepareStatement(insertSql);
-//            pstmt.setString(1, ordNum);
-//            pstmt.executeUpdate();
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//        }
-//    }
-
     public void deleteDeliveries(String ordNum) {
         System.out.println("in deleteDeliveries("+ordNum+")");
         String sql = "DELETE FROM deliveries WHERE ord_num = ?";
@@ -294,10 +278,6 @@ public class DatabaseConnection {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-//        finally { //close connections
-//            stmt.close();
-//            res.close();
-//        }
         return false;
     }
 }

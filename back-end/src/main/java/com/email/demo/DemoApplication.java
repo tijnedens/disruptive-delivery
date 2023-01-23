@@ -18,7 +18,7 @@ public class DemoApplication {
 	private String address = "pasddemo@gmail.com";
 	private String subject = "Your package was collected";
 
-	private String notification = "Dear PutNameHere, your package was collexted and will be delivered shortly";
+	private String notification = "Dear PutNameHere, your package was collected and will be delivered shortly.";
 
 	@Autowired
 	private EmailSenderService senderService;
