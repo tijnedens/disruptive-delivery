@@ -280,4 +280,32 @@ public class DatabaseConnection {
         }
         return false;
     }
+
+    public void delTable() throws SQLException {
+        System.out.println("in delTable() deliveries");
+
+        String delTableSql = "DELETE FROM deliveries";
+        Statement stmt = this.conn.createStatement();
+        stmt.execute(delTableSql);
+    }
+
+    // also can be used to REQUEST ORDER DETAILS
+    public void loadDB() throws SQLException {
+        System.out.println("displaying database");
+
+        String selectSql = "SELECT * FROM deliveries"; // or specifically: "SELECT fname, lname FROM user"
+        Statement stmt =  conn.createStatement(); // sql statement to connect to db
+        ResultSet res = stmt.executeQuery(selectSql);
+
+        System.out.println("\n------ deliveries ------");
+        while (res.next()) {
+            System.out.println(res.getString("ord_num")
+                    + ", " + res.getString("retailer_name")
+                    + ", " + res.getString("pickup_loc")
+                    + ", " + res.getString("dropoff_loc")
+                    + ", " + res.getString("name")
+                    + ", " + res.getString("exp_DateTime")
+                    + ", ");
+        }
+    }
 }

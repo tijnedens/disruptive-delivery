@@ -1,5 +1,6 @@
 package com.api;
 
+import com.api.sql.DatabaseConnection;
 import com.google.gson.Gson;
 
 import java.net.*;
@@ -7,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ApiCommunication {
 
@@ -22,6 +24,8 @@ public class ApiCommunication {
     private final ArrayList<Delivery> acceptedDeliveries = new ArrayList();
 
     private int id;
+    private String sender_name, sender_address, receiver_name, receiver_address, status, exp_datetime;
+
 
     // Get the orders from the API
     private void getOrders() throws Exception{
@@ -41,8 +45,28 @@ public class ApiCommunication {
         transcript = gson.fromJson(orderResponse.body(), Transcript.class);
 
         // Manually set to get the orders
-        System.out.println(transcript.getOrders().get(5).getId());
-        id = transcript.getOrders().get(5).getId();
+        DatabaseConnection database = new DatabaseConnection();
+        // TODO for all orders (for now just one)
+        database.loadDB();
+        database.delTable();
+        database.loadDB();
+
+        ArrayList<Orders> order = transcript.getOrders();
+        int orders_len = transcript.getOrders().size();
+
+        for (int i=0; i != orders_len; i+=1) {
+            id = order.get(i).getId();
+            sender_name = order.get(i).getName("sender");
+            receiver_name = order.get(i).getName("receiver");
+            sender_address = order.get(i).getAddress("sender");
+            receiver_address = order.get(i).getAddress("receiver");
+            exp_datetime = order.get(i).getExpDeliveryTime();
+            //act_datetime = order.get(i).getActDeliveryTime();
+            status = order.get(i).getStatus();
+            database.insertDeliveries(String.valueOf(id), status, sender_name, sender_address,
+                    receiver_address, receiver_name, exp_datetime);
+        }
+        database.loadDB();
 
     }
 
