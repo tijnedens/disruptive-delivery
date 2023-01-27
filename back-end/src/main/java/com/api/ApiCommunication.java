@@ -27,6 +27,7 @@ public class ApiCommunication {
     private String sender_name, sender_address, receiver_name, receiver_address, status, exp_datetime;
 
 
+
     // Get the orders from the API
     private void getOrders() throws Exception{
 
@@ -47,8 +48,8 @@ public class ApiCommunication {
         // Manually set to get the orders
         DatabaseConnection database = new DatabaseConnection();
         // TODO for all orders (for now just one)
-        database.loadDB();
-        database.delTable();
+        //database.loadDB();
+        database.createTable();
         database.loadDB();
 
         ArrayList<Orders> order = transcript.getOrders();
@@ -147,7 +148,6 @@ public class ApiCommunication {
         ApiCommunication demo = new ApiCommunication();
 
         demo.getOrders();
-
 
 
         HttpResponse<String> offerResponse = demo.sendOrders();

@@ -81,7 +81,7 @@ public class Orders {
         Map<String, String> map = new TreeMap<String, String>();
 
         for (Map.Entry<String, String>  entry : map.entrySet()) {
-            if (entry.getKey().equals("expected_deliver_datetime")) {
+            if (entry.getKey().equals("status")) {
                 status += entry.getValue() + " ";
             }
         }

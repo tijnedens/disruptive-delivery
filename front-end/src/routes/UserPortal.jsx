@@ -60,7 +60,7 @@ function LoginResult() {
           {orderArray.map(order => (
 
             <li key={order.ord_num}>
-              Id: {order.ord_num} <br/>Pick up at: {order.pickup_loc} <br/>Deliver at: {order.dropoff_loc} 
+              Id: {order.ord_num} <br/>Pick up at: {order.sender_address} <br/>Deliver at: {order.receiver_address} 
               <br/>
               Status: 
               <select id="statusChoose" name="status" defaultValue={order.status}>

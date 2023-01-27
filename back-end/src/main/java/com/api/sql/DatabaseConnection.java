@@ -90,43 +90,38 @@ public class DatabaseConnection {
         return result;
     }
 
-    private void createTable() throws SQLException {
+    public void createTable() throws SQLException {
         System.out.println("in createTableDeliveries()");
-        String createTableSql = "CREATE TABLE deliveries "
+        String createTableSql = "CREATE TABLE IF NOT EXISTS deliveries "
                 + "( "
                 + "ord_num varchar(60) NOT NULL UNIQUE,"
                 + "status varchar(60),"
-                + "retailer_name varchar(250),"
-                + "content varchar(250),"
-                + "pickup_loc varchar(250),"
-                + "dropoff_loc varchar(250),"
-                + "email varchar(250),"
-                + "name varchar(60),"
-                + "surname varchar(250),"
-                + "exp_Date TEXT,"
-                + "exp_Time TEXT,"
-                + "dim varchar(250)"
+                + "sender_name varchar(250),"
+                + "sender_address varchar(250),"
+                + "receiver_address varchar(250),"
+                + "receiver_name varchar(250),"
+                + "exp_datetime varchar(250)"
                 + ");";
 
         Statement stmt = conn.createStatement();
         stmt.execute(createTableSql);
     }
 
-    public void insertDeliveries(String ordNum, String status, String retailerName,
-                                 String content, String pickup, String dropoff, String email) {
+    public void insertDeliveries(String ordNum, String status, String senderName,
+                                 String senderAddress, String receiverAddress, String receiverName, String expDateTime) {
         System.out.println("in insertDeliveries("+ordNum+")");
-        String insertSql = "INSERT INTO deliveries(ord_num, status, retailer_name, content, " +
-                "pickup_loc, dropoff_loc, email) values(?,?,?,?,?,?,?)";
+        String insertSql = "INSERT INTO deliveries(ord_num, status, sender_name, sender_address, " +
+                "receiver_address, receiver_name, exp_datetime) values(?,?,?,?,?,?,?)";
 
         try {
             PreparedStatement pstmt = this.conn.prepareStatement(insertSql);
             pstmt.setString(1, ordNum);
             pstmt.setString(2, status);
-            pstmt.setString(3, retailerName);
-            pstmt.setString(4, content);
-            pstmt.setString(5, pickup);
-            pstmt.setString(6, dropoff);
-            pstmt.setString(7, email);
+            pstmt.setString(3, senderName);
+            pstmt.setString(4, senderAddress);
+            pstmt.setString(5, receiverAddress);
+            pstmt.setString(6, receiverName);
+            pstmt.setString(7, expDateTime);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -150,15 +145,15 @@ public class DatabaseConnection {
     public void getLoc(String ordNum) throws SQLException {
         System.out.println("in getLoc("+ordNum+")");
 
-        String selectSql = "SELECT ord_num, pickup_loc, dropoff_loc FROM deliveries"; // or specifically: "SELECT fname, lname FROM user"
+        String selectSql = "SELECT ord_num, sender_address, receiver_address FROM deliveries"; // or specifically: "SELECT fname, lname FROM user"
         Statement stmt =  conn.createStatement(); // sql statement to connect to db
         ResultSet res = stmt.executeQuery(selectSql);
 
         System.out.println("\n------ deliveries ------");
         while (res.next()) {
             System.out.println(res.getString("ord_num")
-                    + ", " + res.getString("pickup_loc")
-                    + ", " + res.getString("dropoff_loc"));
+                    + ", " + res.getString("sender_address")
+                    + ", " + res.getString("receiver_address"));
         }
     }
 
@@ -196,7 +191,7 @@ public class DatabaseConnection {
 
     // for the recipient
     public void updateDeliveryTime(String ordNum, String newTime) {
-        String updateSql = "UPDATE deliveries SET exp_Time = '"+newTime+"' WHERE ord_num = '"+ordNum+"'"; // or specifically: "SELECT fname, lname FROM user"
+        String updateSql = "UPDATE deliveries SET exp_datetime = '"+newTime+"' WHERE ord_num = '"+ordNum+"'"; // or specifically: "SELECT fname, lname FROM user"
 
         try {
             PreparedStatement pstmt = this.conn.prepareStatement(updateSql);
@@ -209,7 +204,7 @@ public class DatabaseConnection {
     // show overview of deliveries for the Retailer
     public void loadRetailer(String retailer) throws SQLException {
         System.out.println("in loadRetailer(" + retailer + ")");
-        String retailerSql = "SELECT * FROM deliveries WHERE retailer_name = '" + retailer + "'"; // or specifically: "SELECT fname, lname FROM user"
+        String retailerSql = "SELECT * FROM deliveries WHERE sender_name = '" + retailer + "'"; // or specifically: "SELECT fname, lname FROM user"
 
         Statement stmt = conn.createStatement(); // sql statement to connect to db
         ResultSet res = stmt.executeQuery(retailerSql);
@@ -217,8 +212,7 @@ public class DatabaseConnection {
         System.out.println("\n------ deliveries ------");
         while (res.next()) {
             System.out.println(res.getString("ord_num")
-                    + ", " + res.getString("retailer_name")
-                    + ", " + res.getString("content")
+                    + ", " + res.getString("sender_name")
                     + ", ");
         }
     }
@@ -284,6 +278,14 @@ public class DatabaseConnection {
     public void delTable() throws SQLException {
         System.out.println("in delTable() deliveries");
 
+        String delTableSql = "DROP TABLE deliveries";
+        Statement stmt = this.conn.createStatement();
+        stmt.execute(delTableSql);
+    }
+
+    public void clearRows() throws SQLException {
+        System.out.println("in delTable() deliveries");
+
         String delTableSql = "DELETE FROM deliveries";
         Statement stmt = this.conn.createStatement();
         stmt.execute(delTableSql);
@@ -300,11 +302,11 @@ public class DatabaseConnection {
         System.out.println("\n------ deliveries ------");
         while (res.next()) {
             System.out.println(res.getString("ord_num")
-                    + ", " + res.getString("retailer_name")
-                    + ", " + res.getString("pickup_loc")
-                    + ", " + res.getString("dropoff_loc")
-                    + ", " + res.getString("name")
-                    + ", " + res.getString("exp_DateTime")
+                    + ", " + res.getString("sender_name")
+                    + ", " + res.getString("receiver_address")
+                    + ", " + res.getString("sender_address")
+                    + ", " + res.getString("receiver_name")
+                    + ", " + res.getString("exp_datetime")
                     + ", ");
         }
     }

@@ -36,6 +36,7 @@ function TrackingResult() {
 
   async function getOrder() {
     let response = await axios.get(`http://localhost:8080/order/${params.trackingId}`);
+    console.log(response);
     setOrder(response);
   }
   
@@ -50,9 +51,8 @@ function TrackingResult() {
       <ul>
         <li>Tracking number: {orderObject.data.ord_num}</li>
         <li>Status: {orderObject.data.status}</li>
-        <li>Dropoff Location: {orderObject.data.dropoff_loc}</li>
-        <li>Delivery Date: {orderObject.data.exp_Date}</li>
-        <li>Delivery Time: {orderObject.data.exp_Time}</li>
+        <li>Dropoff Location: {orderObject.data.receiver_address}</li>
+        <li>Delivery Date: {orderObject.data.exp_datetime}</li>
       </ul>
     )}
     </div>
